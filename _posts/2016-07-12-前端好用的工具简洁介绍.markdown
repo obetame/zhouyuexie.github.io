@@ -1,0 +1,71 @@
+---
+layout: post
+title:  "前端必用的好用工具集合"
+date:   2016-07-12 12:21:03 +0800
+tags: 工具,gulp,mocha,bower,webpack
+---
+
+# 需要安装的依赖
+
+#### Mocha
+
+> Mocha（发音"摩卡"）诞生于2011年，是现在最流行的JavaScript测试框架之一，在浏览器和Node环境都可以使用。除了Mocha以外，类似的测试框架还有Jasmine、Karma、Tape等，也很值得学习。
+
+**安装命令：**```npm install -g mocha```。
+
+#### bower
+
+> Bower是一个客户端技术的软件包管理器，它可用于搜索、安装和卸载如JavaScript、HTML、CSS之类的网络资源。
+
+**安装命令：**```npm install -g bower```。
+
+#### Webpack
+
+> 它是一种模块化加载器，当然也不仅仅限于此。某种程度上来说，可以代替某些gulp的功能.
+
+**安装命令：**```npm install -g webpack```。
+
+#### Gulp
+
+> Gulp.js 是一个自动化构建工具,开发者可以使用它在项目开发过程中自动执行常见任务。
+
+**安装命令：**```npm install -g gulp```。
+
+*常用的gulp插件有：*
+- gulp-jshine:js代码检查。
+- gulp-mocha:配合mocha使用。
+- gulp-notify:提示消息插件。
+- gulp-csslint:压缩css文件。
+- gulp-clean:清理路径下文件。
+- gulp-if:根据不同的环境，切换方法
+- gulp-concat:文件合并.
+- gulp-uglify:替换压缩文件.
+- gulp-imagemin:压缩PNG、JPEG、GIF和SVG.
+- gulp-htmlmin:压缩html
+- gulp-autoprefixer:增加私有变量前缀
+
+#### html2jade
+
+> html2jade 是一个将html格式文件转换为jade格式文件。
+
+**安装命令：**```npm install -g html2jade```。
+
+#### sublime text 3的插件
+
+> sublime text 3是一个功能、插件非常丰富的编辑器.
+
+**使用这些插件之前需要安装`package control`,sublime text 3的安装代码如下:**
+
+> 安装方法:"ctrl+`" 或者 "View > Show Console",然后输入以上的代码.
+
+```python
+import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
+```
+
+- color highlighter 颜色高亮
+- DocBlockr 代码注释
+- Emmet 前端必备
+- CovertToUtf8 防止乱码
+- sublimecodeintel 代码智能提示
+
+更多插件列表:[https://packagecontrol.io/browse/popular](https://packagecontrol.io/browse/popular)
