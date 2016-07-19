@@ -53,7 +53,7 @@ steam:              zhouyuexie
 #dribbble:          username
 #youtube:           username
 #soundcloud:        username
-#weibo:             username
+weibo:              爱恋恋不忘
 #flickr:            username
 #codepen:           username
 #keybase:           username
@@ -72,3 +72,6 @@ jekyll-mentions:
 
 # Exclude list
 exclude: [README.md, Gemfile, Gemfile.lock, node_modules, gulpfile.js, package.json, _site, src, vendor, CNAME, LICENSE, Rakefile]
+
+# timezone: Asia/Shanghai
+timezone: Asia/Shanghai
