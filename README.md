@@ -1,8 +1,18 @@
-# zhouyuexie.github.com
-分享学习前端的技术积累
+## 为何建站
+* 记录自己学习的过程
+* 帮助更多的人去学习
+* 知识技术的备份
+* 整合自己所学
+* 将学习的知识运用于实际
 
-我的网站地址:[https://zhouyuexie.github.com](https://zhouyuexie.github.com)
+## 关于我
 
-我的个人博客地址:[quietboy.net](www.quietboy.net)
+目前大四,就读于江西师范大学数信学院.
 
-如果你有任何建议,请务必联系我,我的邮箱`zhouyuexie@gmail.com`
+对于本网站有任何问题请联系我:[zhouyuexie@gmail.com](zhouyuexie@gmail.com)
+
+## 声明
+
+本网站使用了<a href="http://taylantatli.github.io/Moon"><b>Moon</b></a>jekyll 主题.
+      
+[主题github页面](https://github.com/TaylanTatli/Moon){: .btn}
