@@ -5,11 +5,7 @@ date:   2016-07-15 12:21:03 +0800
 tags: https,http
 ---
 
-## 1.前言
-
-:::success
 这几天研究了一下Nginx,用来控制使用不同协议访问不同的页面,不过由于Nginx资料太少,看来好多都没法理解如何配置,只能`rewrite`所有的请求到https的服务器上,可是一般网站只有注册登录的时候才会用到https.
-:::
 
 ---
 
@@ -67,7 +63,7 @@ var app = require('../app_http');
 
 比如我们想要将访问http服务器的`/login`和`/logup`请求导向到https中时,我们可以这样写http中的路由:
 
-```JavaScript
+```javascript
 app.get('/login',function(req,res){
  res.redirect(301,"https://www.quietboy.net/login");
 });
@@ -84,7 +80,7 @@ app.get('/logup',function(req,res){
 
 和上面的代码改动的差不多,比如我想改`/articles`的页面:
 
-```JavaScript
+```javascript
 app.get('/articles',function(req,res){
 	res.redirect(301,"http://www.quietboy.net/articles");
 });
@@ -92,7 +88,7 @@ app.get('/articles',function(req,res){
 
 可是一般的网页我们都有参数的,如果我这样跳转参数丢失了那这个也没什么用了,所以我们可以这样改:
 
-```JavaScript
+```javascript
 app.get('/articles',function(req,res){
  if(req.query.user && req.query.indexes){
   res.redirect(301,"http://www.quietboy.net/articles?user="+req.query.user+"&indexes="+req.query.indexes);
