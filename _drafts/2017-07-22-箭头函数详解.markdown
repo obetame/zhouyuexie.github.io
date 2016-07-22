@@ -1,0 +1,61 @@
+---
+layout: post
+title:  "箭头函数详解"
+date:   2016-07-22 14:21:03 +0800
+tags: ECMAScript6,ES6,Javascript,箭头,arrow
+---
+
+箭头函数是ES6新增的一个新的函数,为什么要叫箭头,因为它真的是箭头啊,话不多少,先来看看一个例子吧.
+
+```javascript
+//下面就是一个箭头函数例子
+x => x*x;
+
+//也就是我们平时这样写的
+function(x){
+  return x*x;
+}
+```
+
+可以看出来箭头函数也是一种匿名函数,`x => x*x;`中箭头左边的`x`就是定义的参数,箭头右边的就是返回的值.你可以将这段代码粘贴到浏览器的console中,如果没有报错则说明浏览器支持ES6语法.
+
+```javascript
+x => x*x;
+
+//chrome浏览器返回:function x => x*x
+//说明他是支持ES6语法的
+```
+
+ES6的箭头函数支持两种书写格式,一种就是上面那种,可以称之为表达式箭头函数,因为它没有括号这些东西,而且是书写在一行内.另外一种就是语句块的箭头函数.
+
+```javascript
+//这个箭头函数是有大括号的
+x =>{
+  if(x>10){
+    console.log("x>10");
+    return true;
+  }
+  else{
+    console.log("x<=10");
+    return false;
+  }
+}
+```
+
+上面块状语句就需要使用`return`返回你想返回的数据了.
+如果参数不是一个的话,就需要用括号`()`括起来了.
+
+```javascript
+//这个箭头函数是有大括号的
+(x,y) =>{
+  if(x>y){
+    console.log("x>y");
+    return true;
+  }
+  else{
+    console.log("x<=y");
+    return false;
+  }
+}
+```
+
