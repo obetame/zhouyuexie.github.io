@@ -25,10 +25,11 @@ comments: true
                 {{ content }}
             </div>
         </div>
-        {% if comments and site.disqus_shortname %}
         <section id="disqus_thread" class="animated fadeInUp"></section>
+        <!-- {% if comments and site.disqus_shortname %} -->
+        <!-- <section id="disqus_thread" class="animated fadeInUp"></section> -->
         <!-- /#disqus_thread -->
-        {% endif %}
+        <!-- {% endif %} -->
     </header>
     {% include scripts.html %}
     {% if site.mathjax == true %}
