@@ -39,10 +39,12 @@ tags: 工具,gulp,mocha,bower,webpack
 - gulp-clean:清理路径下文件。
 - gulp-if:根据不同的环境，切换方法
 - gulp-concat:文件合并.
-- gulp-uglify:替换压缩文件.
+- gulp-uglify:替换压缩js文件.
 - gulp-imagemin:压缩PNG、JPEG、GIF和SVG.
 - gulp-htmlmin:压缩html
 - gulp-autoprefixer:增加私有变量前缀
+- gulp-webpack:配合webpack使用
+- [gulp-sass](https://www.npmjs.com/package/gulp-sass):转换为css
 
 #### html2jade
 
@@ -73,3 +75,5 @@ import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc5
 - MarkdownLight 同上
 
 更多插件列表:[https://packagecontrol.io/browse/popular](https://packagecontrol.io/browse/popular)
+
+本文最后更新于2016-7-25

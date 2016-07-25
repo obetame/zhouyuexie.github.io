@@ -61,3 +61,5 @@ var bob = {
 ```
 
 更多信息: [MDN Arrow Functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+
+本文最后更新于2016-7-25.
