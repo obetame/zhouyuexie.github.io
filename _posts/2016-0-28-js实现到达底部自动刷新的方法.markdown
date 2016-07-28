@@ -35,7 +35,7 @@ var screen = window.screen.height;//可视区域高度
 var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
 
 if(compare === screen)(){
-	//到达底部后你需要执行的代码
+  //到达底部后你需要执行的代码
 }
 ```
 
@@ -46,7 +46,7 @@ var screen = window.screen.height;//可视区域高度
 var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
 
 if(screen+100 >= compare)(){
-	//接近底部100px后你需要执行的代码
+  //接近底部100px后你需要执行的代码
 }
 ```
 
@@ -54,16 +54,16 @@ if(screen+100 >= compare)(){
 
 ```javascript
 if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTop)(){
-	var dropload = setTimeout(function(){
-		var screen = window.screen.height;//可视区域高度
-		var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+ var dropload = setTimeout(function(){
+  var screen = window.screen.height;//可视区域高度
+  var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
 
-		if(screen+100 >= compare){
-			//如果两秒后还在底部,就操作
-			//
-			clearTimeout(dropload);//记得加上这个
-		}
-	},2000);
+  if(screen+100 >= compare){
+   //如果两秒后还在底部,就操作
+   //
+   clearTimeout(dropload);//记得加上这个
+  }
+ },2000);
 }
 ```
 
@@ -74,18 +74,18 @@ if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTo
 ```javascript
 //这里if语句我不用这个已经定义过的
 window.onscroll = function(){
-	if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTop)(){
-		var dropload = setTimeout(function(){
-			var screen = window.screen.height;//可视区域高度
-			var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+ if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTop)(){
+  var dropload = setTimeout(function(){
+   var screen = window.screen.height;//可视区域高度
+   var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
 
-			if(screen+100 >= compare){
-				//如果两秒后还在底部,就操作
-				//
-				clearTimeout(dropload);//记得加上这个
-			}
-		},2000);
-	}
+   if(screen+100 >= compare){
+     //如果两秒后还在底部,就操作
+     //
+     clearTimeout(dropload);//记得加上这个
+   }
+  },2000);
+ }
 }
 ```
 
@@ -99,18 +99,18 @@ var compare = document.body.clientHeight-document.body.scrollTop;//可视区域�
 
 var loadState = null;//记录加载状态的变量
 window.onscroll = function(){
-	//如果接近底部
-	if(screen+100 >= compare){
-		//如果加载状态为null,则可以继续加载
-		if(!loadState){
-			loadState = setTimeout(function(){
-				//这里填写你所需要的操作...
-				//下面的是必须的
-				clearTimeout(loadState);
-				loadState = null;//设置为空,否则清除掉也没用
-			},2000);
-		}
-	}
+ //如果接近底部
+ if(screen+100 >= compare){
+  //如果加载状态为null,则可以继续加载
+  if(!loadState){
+   loadState = setTimeout(function(){
+    //这里填写你所需要的操作...
+    //下面的是必须的
+    clearTimeout(loadState);
+    loadState = null;//设置为空,否则清除掉也没用
+   },2000);
+  }
+ }
 }
 ```
 
@@ -124,15 +124,15 @@ window.onscroll = function(){
 
 ```javascript
 window.onscroll = function(){
-	//如果距离顶部大于500px,则显示向上的按钮
-	if(document.body.scrollTop>500){
-		//显示向上的按钮
-		document.getElementById('up_btn').style.display = 'block';
-	}
-	else{
-		//不显示向上的按钮
-		document.getElementById('up_btn').style.display = 'none';
-	}
+ //如果距离顶部大于500px,则显示向上的按钮
+ if(document.body.scrollTop>500){
+  //显示向上的按钮
+  document.getElementById('up_btn').style.display = 'block';
+ }
+ else{
+  //不显示向上的按钮
+  document.getElementById('up_btn').style.display = 'none';
+ }
 }
 ```
 
