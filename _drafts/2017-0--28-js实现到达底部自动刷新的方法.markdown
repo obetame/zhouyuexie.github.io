@@ -1,0 +1,139 @@
+---
+layout: post
+title:  "js实现到达底部自动刷新的方法"
+date:   2016-07-28 11:21:03 +0800
+tags: js,javascript
+---
+
+有时候我们会有这种需求，就是让你实现下拉刷新或者上拉刷新的操作，这类需求HTML5并没有给我们提供原生的方法，不过这类js库倒是挺多的，可是我们只是想要这类实现，不想引用一大堆库怎么办，那我们就得自己去实现了。所谓“曲线救国”，不过如此。
+
+## 思路
+
+这里我说出我的想法只想抛砖引玉，我只说下拉刷新的实现吧。对于下拉刷新，我想到的是监测用户的滚动，如果用户在底部或者接近底部的时候等待了两秒，那么两秒后我们就开始加载更多的数据。
+
+## 实现
+
+先上图，画的不好就随便看看吧，如果你觉得有问题可以底下留言。
+
+![解析图](http://oavd4gltg.bkt.clouddn.com/js%E5%AE%9E%E7%8E%B0%E5%88%B0%E8%BE%BE%E5%BA%95%E9%83%A8%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0%E7%9A%84%E6%96%B9%E6%B3%951.png)
+
+我们所用到的就是图里的那些啦，而我们所要求的就是Y了。
+
+此时Y等于：
+
+```javascript
+var screen = window.screen.height;//可视区域高度
+var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+var Y = compare - screen;
+```
+
+如果你到达底部了,Y就等于0,实际中我们不需要再减去`window.screen.height`,只需要这样求:
+
+```javascript
+var screen = window.screen.height;//可视区域高度
+var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+if(compare === screen)(){
+	//到达底部后你需要执行的代码
+}
+```
+
+但是这个不够人性化,毕竟我们不能每次都'到底'吧,所以我们可以接近底部的时候就执行代码,此时:
+
+```javascript
+var screen = window.screen.height;//可视区域高度
+var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+if(screen+100 >= compare)(){
+	//接近底部100px后你需要执行的代码
+}
+```
+
+是不是已经可以操作了呢?但是我们的需求是要求等待2秒后才执行这个操作呢,所以我们需要使用`setTimeout`来定时,具体思路是当接近底部的时候就设置一个定时器,两秒后再次计算当前的位置是否还是接近底部,如果是接近底部,我们就执行特定的操作.
+
+```javascript
+if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTop)(){
+	var dropload = setTimeout(function(){
+		var screen = window.screen.height;//可视区域高度
+		var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+		if(screen+100 >= compare){
+			//如果两秒后还在底部,就操作
+			//
+			clearTimeout(dropload);//记得加上这个
+		}
+	},2000);
+}
+```
+
+好了,其它问题来了,这个只能运行一次,所以当你到达底部的时候你会发现这个函数已经运行过了.
+
+有些小伙伴就知道浏览器中有个滚动事件,每次滚动都会触发这个事件,所以我们可以在这个事件中写一个函数来调用.
+
+```javascript
+//这里if语句我不用这个已经定义过的
+window.onscroll = function(){
+	if(window.screen.height+100 >= document.body.clientHeight-document.body.scrollTop)(){
+		var dropload = setTimeout(function(){
+			var screen = window.screen.height;//可视区域高度
+			var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+			if(screen+100 >= compare){
+				//如果两秒后还在底部,就操作
+				//
+				clearTimeout(dropload);//记得加上这个
+			}
+		},2000);
+	}
+}
+```
+
+可是当你高兴的想到自己快完成这个需求的时候,却发现了奇怪的bug:每次接近底部的时候他都会操作几次你的代码.这个问题我调试了几次,后来发现这是你加载了新的数据的时候你的可视区域还是那里,可视底部距离你是增加了,相当于你在"滚动"滚动条,于是就触发了`onscroll`事件,所以里面的代码执行了几次,这种bug尤其是你缓慢加载的时候(有加载动画,而不是一下子全部出现)更容易触发.
+
+我们可以改进一下这个函数,使用`loadState`变量记录当前加载状态,如果`loadState`为空,则说明可以加载,否则说明之前的加载还未完成.`setTimeout`定时器来延迟加载:
+
+```javascript
+var screen = window.screen.height;//可视区域高度
+var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+
+var loadState = null;//记录加载状态的变量
+window.onscroll = function(){
+	//如果接近底部
+	if(screen+100 >= compare){
+		//如果加载状态为null,则可以继续加载
+		if(!loadState){
+			loadState = setTimeout(function(){
+				//这里填写你所需要的操作...
+				//下面的是必须的
+				clearTimeout(loadState);
+				loadState = null;//设置为空,否则清除掉也没用
+			},2000);
+		}
+	}
+}
+```
+
+## 其它的操作需求
+
+这里仅列出我遇到过的需求,请谨慎考虑后使用.
+
+#### 回到顶部按钮
+
+你肯定遇到过这个操作,如果你在浏览相当长的网页的时候,滚动到下面又想回到顶部,如果没有这个回到顶部的按钮,你就需要滚动相当久的滚轮了,所以有时候这个按钮是相当提升网站使用感受的.
+
+```javascript
+window.onscroll = function(){
+	//如果距离顶部大于500px,则显示向上的按钮
+	if(document.body.scrollTop>500){
+		//显示向上的按钮
+		document.getElementById('up_btn').style.display = 'block';
+	}
+	else{
+		//不显示向上的按钮
+		document.getElementById('up_btn').style.display = 'none';
+	}
+}
+```
+
+**如果你有更好的建议可以下面留言.**
