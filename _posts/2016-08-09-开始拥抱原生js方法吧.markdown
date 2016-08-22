@@ -1,0 +1,592 @@
+---
+layout: post
+title:  "开始拥抱原生js方法吧"
+date:   2016-08-09 14:21:03 +0800
+tags: js,javascript,原生,html5
+---
+
+自 jQuery 诞生之日起已经有十年了,这十年里 jQuery 解救了无数为兼容不同浏览器而抓破脑袋的前端攻城师,在世界前10000个访问最多的网站中，有超过55%在使用 jQuery .
+
+-----
+
+## 为什么要抛弃 jQuery?
+
+使用 jQuery 好处我也就不再赘述了,但是,随着时代的变迁,不同的浏览器厂商开始支持越来越多的新特性,原生 API 已经足够好用,最关键的IE6,IE7我们也不用去支持了,所以,jquery对于有些人来说是不再那么重要了.
+
+> 而且前端发展很快,我们并不需要为了操作 DOM、Event 等再学习一下 jQuery 的 API。同时由于 React、Angular、Vue 等框架的流行，直接操作 DOM 不再是好的模式，jQuery 使用场景大大减少。
+
+jQuery 虽然2.0开始不再支持IE 6/7/8了,但是"体积"还是很大,一个简单的网页还不至于使用一个几乎全能的库,所以了解原生JS的API是必须的.
+
+-----
+
+## 使用原生JS的场景
+
+一般来说初学者应该更应该去学原生的JS操作,而且大公司看重的是你的原生JS水平,这才是你以后发展高度的天花板,jQuery 简单易学是个优点,可是对于新人来说可能会让他们觉得JS也就这个样,很简单嘛.
+
+好吧,前端大神都不敢这么想....
+
+还有上面说的 React、Angular、Vue 等框架,这类框架几乎没有操作DOM的方法,作者也不支持这样做,比如我现在用的 Vue ,你操作DOM也是可以的,但是需要在你要操作的DOM上加上一个`v-el:name`,然后你就可以这样操作DOM:`this.$els.name.style.display = 'none';`.有些人一眼就看明白了,这就是原生DOM的操作.
+
+所以,如果我们要学这类框架,我们就要熟悉原生JS方法了.
+
+-----
+
+## 开始学习吧
+
+目录:
+1. 查询Query Selector
+2. 操作类Class
+3. CSS & Style
+4. 节点操作
+5. 节点属性操作Node
+6. 表单Form
+7. 宽度高度Width & Height
+8. 位置偏移Position & Offset
+9. Ajax
+10 .事件Event
+
+### 查询Query Selector
+
+我们的class,id,属性选择器都可以使用 `document.querySelector` 或 `document.querySelectorAll` 替代.
+
+`document.querySelector`返回找到的第一个元素,而`document.querySelectorAll`返回所有匹配元素组成的 NodeList,它可以通过 [].slice.call() 把它转成 Array.如果没有匹配到元素,这个两个方法都是返回`null`,而不是 jQuery 的空数组`[]`.
+
+```javascript
+//返回的是找到的第一个元素,以下两个方法返回的都是一样的元素
+document.querySelector('p');
+document.querySelectorAll('p')[0];
+
+//如果你想模仿jQuery没找到所需要的元素返回[]时
+//你可以这样
+var myselect = document.querySelectorAll('selector') || [];
+```
+
+你也可以实现和 jQuery 一样的链式匹配:
+
+```javascript
+//找到article后继续找p
+document.querySelector('article').querySelector('p');
+
+//当然你也可以直接这样,找到第一个article中的第一个p
+document.querySelector('article p');
+```
+
+说了那么多,我们来对比一下 jQuery 的吧,这样估计效果更好,毕竟都很熟悉 jQuery 了.
+
+1.一般查询:
+
+```javascript
+// jQuery
+$('selector');
+
+// 原生
+document.querySelectorAll('selector');
+```
+
+2.查询类:
+
+```javascript
+// jQuery
+$('.css');
+
+// 原生
+document.querySelectorAll('.css');
+
+// 或者
+document.getElementsByClassName('css');
+```
+
+3.查询ID:
+
+```javascript
+// jQuery
+$('#id');
+
+// 原生
+document.querySelector('#id');
+
+// 或者
+document.getElementById('id');
+```
+
+4.查询属性:
+
+```javascript
+// jQuery
+$('a[target=_blank]');
+
+// 原生
+document.querySelectorAll('a[target=_blank]');
+```
+
+### 操作类Class
+
+1. 增加类
+
+```javascript
+// jQuery
+$el.addClass(className);
+
+// 原生
+el.classList.add(className);
+```
+
+2. 移除类
+
+```javascript
+// jQuery
+$el.removeClass(className);
+
+// 原生
+el.classList.remove(className);
+```
+
+3. 是否有类
+
+```javascript
+// jQuery
+$el.hasClass(className);
+
+// 原生
+el.classList.contains(className);
+```
+
+4. 切换类
+
+```javascript
+// jQuery
+$el.toggleClass(className);
+
+// 原生
+el.classList.toggle(className);
+```
+
+### CSS & Style
+
+1. 获取style
+
+```javascript
+// jQuery
+$el.css("color");
+
+// 原生
+// 注意：此处为了解决当 style 值为 auto 时，返回 auto 的问题
+const win = el.ownerDocument.defaultView;
+// null 的意思是不返回伪类元素
+win.getComputedStyle(el, null).color;
+```
+
+2. 设置style
+
+```javascript
+// jQuery
+$el.css({ color: "#ff0011" });
+
+// 原生
+el.style.color = '#ff0011';
+```
+
+### 节点操作
+
+1. 插入HTML
+
+```javascript
+// jQuery
+$el.before(htmlString);  
+$parent.append(el);  
+$el.after(htmlString); 
+
+// 原生
+el.insertBefore(NewDom,ele); 
+parent.appendChild(el);  
+el.insertAdjacentHTML("beforeend", '<li>内容</li>');  
+```
+
+2. 获取子节点
+
+```javascript
+// jQuery
+$el.children();
+
+// 原生
+el.children;
+```
+
+3. 上一个节点
+
+```javascript
+// jQuery
+$el.prev();
+
+// 原生
+el.previousElementSibling;
+```
+
+4. 兄弟节点
+
+```javascript
+// jQuery
+$el.siblings();
+
+// 原生
+[].filter.call(el.parentNode.children, function(child) {
+  return child !== el;
+});
+```
+
+5. 下一个节点
+
+```javascript
+// jQuery
+$el.next();
+
+// 原生
+el.nextElementSibling;
+```
+
+6. 父节点
+
+```javascript
+// jQuery
+$el.parentNode();
+
+// 原生
+el.parentNode;
+```
+
+7. 克隆节点
+
+```javascript
+// jQuery
+$el.clone(true);
+
+// 原生
+el.cloneNode(true);
+```
+
+8. 创建节点
+
+```javascript
+// jQuery
+$('<div></div>');
+
+// 原生
+document.createElement('div'); 
+```
+
+9. 删除节点
+
+```javascript
+// jQuery
+$el.remove();
+
+// 原生
+parent.removeChild(el);//父节点开始删除
+
+//所以我们要先获取到要删除元素的父节点
+el.parentNode.removeChild(el);
+```
+
+### 节点属性操作Node
+
+1. 获取text
+
+```javascript
+// jQuery
+$el.text();
+
+// 原生
+el.textContent;
+```
+
+2. 设置text
+
+```javascript
+// jQuery
+$el.text(string);
+
+// 原生
+el.textContent = string;
+```
+
+3. 获取HTML内容
+
+```javascript
+// jQuery
+$el.html();
+
+// 原生
+el.innerHTML;
+```
+
+4. 设置HTML内容
+
+```javascript
+// jQuery
+$el.html(htmlString);
+
+// 原生
+el.innerHTML = htmlString;
+```
+
+5. 获取属性
+
+```javascript
+// jQuery
+$el.attr('class');
+
+// 原生
+e.getAttribute('class');
+```
+
+6. 设置属性
+
+```javascript
+// jQuery
+$el.attr('class','node');
+
+// 原生
+e.setAttribute('foo','node');
+```
+
+7. 删除属性
+
+```javascript
+// jQuery
+$el.removeAttr('class');
+
+// 原生
+e.removeAttribute('class');
+```
+
+8. Data属性
+
+```javascript
+// jquery
+$el.data("foo", 52);  //设置  
+$el.data("foo");  //获取  
+$el.removeData("foo");  //删除 
+
+// 原生
+el.dataset.foo = 52  //设置  
+el.dataset.foo  //获取 
+//也可通过attribute方法来设置获取和删除  
+el.setAttribute('data-foo', 52);//设置  
+el.getAttribute('data-foo'); //获取  
+el.removeAttribute('data-foo');//删除 
+```
+
+### 表单Form
+
+1. 获取input值
+
+```javascript
+// jQuery
+$el.val();
+
+// 原生
+el.value;
+```
+
+### 宽度高度Width & Height
+
+Width 与 Height 获取方法相同，下面以 Height 为例：
+
+1. Window 高度
+
+```javascript
+// jQuery
+$(window).height();
+
+// 原生
+// 不含 scrollbar，与 jQuery 行为一致
+window.document.documentElement.clientHeight;
+// 含 scrollbar
+window.innerHeight;
+```
+
+2. Document 高度
+
+```javascript
+// jQuery
+$(document).height();
+
+// 原生
+document.documentElement.scrollHeight;
+```
+
+3. Element 高度
+
+```javascript
+// jQuery
+$el.height();
+
+// 原生
+// 与 jQuery 一致（一直为 content 区域的高度）
+function getHeight(el) {
+  const styles = this.getComputedStyle(el);
+  const height = el.offsetHeight;
+  const borderTopWidth = parseFloat(styles.borderTopWidth);
+  const borderBottomWidth = parseFloat(styles.borderBottomWidth);
+  const paddingTop = parseFloat(styles.paddingTop);
+  const paddingBottom = parseFloat(styles.paddingBottom);
+  return height - borderBottomWidth - borderTopWidth - paddingTop - paddingBottom;
+}
+// 精确到整数（border-box 时为 height 值，content-box 时为 height + padding + border 值）
+el.clientHeight;
+// 精确到小数（border-box 时为 height 值，content-box 时为 height + padding + border 值）
+el.getBoundingClientRect().height;
+```
+
+### 位置偏移Position & Offset
+
+1. 位置Position
+
+```javascript
+// jQuery
+$el.position();
+
+// 原生
+{ left: el.offsetLeft, top: el.offsetTop }
+```
+
+2. 偏移Offset
+
+```javascript
+// jQuery
+$el.offset();
+
+// Native
+function getOffset (el) {
+  const box = el.getBoundingClientRect();
+
+  return {
+    top: box.top + window.pageYOffset - document.documentElement.clientTop,
+    left: box.left + window.pageXOffset - document.documentElement.clientLeft
+  }
+}
+```
+
+3. Scroll Top(距离顶部高度)
+
+```javascript
+// jQuery
+$(window).scrollTop();
+
+// Native
+(document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+```
+
+#### Ajax
+
+你可以使用[fetch](https://github.com/camsong/fetch-ie8)和[fetch-jsonp](https://github.com/camsong/fetch-jsonp)替代.
+
+### 事件Event
+
+1. 使用`on`绑定事件
+
+```javascript
+// jQuery
+$el.on(eventName, eventHandler);
+
+// Native
+el.addEventListener(eventName, eventHandler);
+```
+
+2. 解绑事件
+
+```javascript
+// jQuery
+$el.off(eventName, eventHandler);
+
+// Native
+el.removeEventListener(eventName, eventHandler);
+```
+
+3. 出发事件(自定义事件)
+
+```javascript
+// jQuery
+$(el).trigger('custom-event', {key1: 'data'});
+
+// 原生
+if (window.CustomEvent) {
+	//如果支持CustomEvent
+  const event = new CustomEvent('custom-event', {detail: {key1: 'data'}});
+} else {
+	//否则就使用createEvent
+  const event = document.createEvent('CustomEvent');
+  //初始化事件对象
+  event.initCustomEvent('custom-event', true, true, {key1: 'data'});
+}
+
+//触发自定义事件
+el.dispatchEvent(event);
+```
+
+### 其它
+
+1. isArray
+
+```javascript
+// jQuery
+$.isArray(range);
+
+// 原生
+Array.isArray(range);
+```
+
+2. Trim
+
+```javascript
+// jQuery
+$.trim(string);
+
+// 原生
+string.trim();
+```
+
+3. Object Assign
+
+```javascript
+// jQuery
+$.extend({}, defaultOpts, opts);
+
+// 原生
+Object.assign({}, defaultOpts, opts);
+```
+
+4. Contains
+
+```javascript
+// jQuery
+$.contains(el, child);
+
+// 原生
+el !== child && el.contains(child);
+```
+
+## 总结
+
+以上都是我个人平时积累和查找资料所得,你们可以从下面的参考资料去找到源头.如果你使用webpack这类打包工具,那我顺便介绍一些其它的库.
+
+#### [domquery](https://github.com/npm-dom/domquery)
+
+官网描述的是像jQuery一样的操作DOM.能满足你大部分需求,也能缓解你离开jQuery后的焦急状况.
+
+#### [dom-select](https://github.com/npm-dom/dom-select)
+
+和上面的差不多,功能可能少了点.
+
+#### [dom-classes](https://github.com/npm-dom/dom-classes)
+
+获取所选元素的类,以数组形式返回.
+
+#### [dom-style](https://github.com/npm-dom/dom-style)
+
+看名字就知道这是干嘛的了,我就不再多说了.
+
+参考资料:
+* [youmightnotneedjquery](http://youmightnotneedjquery.com/)
+* [You-Dont-Need-jQuery](https://github.com/oneuijs/You-Dont-Need-jQuery/blob/master/README.zh-CN.md#dom-manipulation)
+* [npm-dom集合](https://github.com/npm-dom)

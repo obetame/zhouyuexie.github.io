@@ -1,0 +1,66 @@
+## 1. css问题
+
+#### 绝对定位
+
+对于元素内有绝对定位的元素，不能使用tranform属性，也就是说不能使用动画，否则绝对定位的元素无法正常显示,这是规定的.所以用了绝对定位或者fixed定位的,最好直接放在body下.
+
+## 2. 浏览器
+
+#### 1. safari
+
+**表现:input无法输入.**
+
+在safari浏览器(暂时没有测试其它浏览器)下如果css样式设置了`user-select: none;`,那么input会无法被正确使用,也就是无法点击和输入.
+
+#### 2. safari
+
+**表现:网站无法记录session实现登陆.**
+
+用fiddler检查发现能做到设置cookie,可是当你关掉微信浏览器后再次打开,请求头中却没有了那个cookie,网上找了很多回答,有些人说是safari浏览器中默认的“接受cookie”是设置成“从访问过的网页”.测试网页登陆时候发现无法登陆,查看才发现session每次都是`undefined`,也就是说safari可能每次打开网页都清空了cookie.虽然你可以在设置下面找到safari打开然后手动设置成"总是".但是这个办法只能解决你的问题,并不能解决用户的问题,然后我去stackvoerflow上找到一篇回答,点击[这里查看](http://stackoverflow.com/questions/2138245/session-is-lost-and-created-as-new-in-every-servlet-request).
+
+第一名的回答说了:几乎所有的浏览器不接受没有域名的cookies.所以你需要一个域名.
+
+所以解决办法就是将你的ip地址更换成域名去访问,也就是说本来是`http://192.168.31.86:3000`访问服务器的,你要换成你的域名去访问,比如`http://yourlocation.com`,这就很简单了,改一下你的`hosts`就好了.简单的说就是用Fiddler开代理,这个应该挺简单的吧.
+
+如果还不行,那你就直接上测试服务器测试好了,更简单快捷.
+
+## js问题
+
+#### 1. 设置的`color`变成`rgb`
+
+一次设置元素`color`的时候,再去匹配是否相等然后一直得到错误的结果:
+
+```javascript
+//获取所有类为your的元素
+var yours = document.getElementsByClassName('your');
+
+//使用了underscore中的each,给序号大于2的元素加上颜色
+_.each(yours,function(element,index){
+  // index不等于1的时候设置颜色
+  if(index!==1){
+    element.style.color = "#d5d5d5";
+    element.style.borderColor = "#d5d5d5";
+  }
+});
+
+//判断class等于your的其中一个元素color是否等于"#d5d5d5"
+var thisIdColor = document.getElementById("your3").style.color;
+if(thisIdColor==="#d5d5d5"){
+  // 接下来的操作
+  return;
+}
+
+//意外的是浏览器一直不执行下面的代码,
+//而又因为一些原因我都是一直在手机上测试.
+```
+
+弄了半天才发现thisIdColor不等于"#d5d5d5",`document.getElementById("your3").style.color`返回的是一个rgb格式的颜色代码,而不是十六进制的.所以你要这样:
+
+```javascript
+if(thisIdColor.replace(/\s+/g,"")==="rgb(213,213,213)"){
+  // 接下来的操作
+  return;
+}
+```
+
+你还要记得去掉空格,否则又会得到错误的结果.

@@ -35,10 +35,10 @@ ES6包括以下新的特性：
 ## ECMAScript 6 特性
 
 ### 箭头函数
-可以通过`=>`快速使用箭头函数.他们在语法上相关特征类似于C #，java 8和CoffeeScript,他们都支持返回语句块和表达式的值.长得不像函数的样子,而且箭头函数中`this`总是绑定总是指向对象自身.
+可以通过`=>`快速使用箭头函数.他们在语法上相关特征类似于C #，java 8和CoffeeScript,他们都支持返回语句块和表达式的值.长得不像函数的样子,而且箭头函数中`this`总是绑定总是指向对象自身.箭头函数的语法比函数表达式的短.
 
 ```javascript
-// 表达式
+// 表达式语法
 var odds = evens.map(v => v + 1);
 var nums = evens.map((v, i) => v + i);
 var pairs = evens.map(v => ({even: v, odd: v + 1}));
@@ -59,6 +59,18 @@ var bob = {
   }
 }
 ```
+
+单参数不需要括号或大括号,返回语句是隐式的.
+
+```javascript
+let foo = ["Hello", "World"];
+
+// ES6
+let bar = foo.map(x => x.length);
+// ES5
+var bar = foo.map(function(x) { return x.length; });
+```
+
 
 更多信息: [MDN Arrow Functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 
