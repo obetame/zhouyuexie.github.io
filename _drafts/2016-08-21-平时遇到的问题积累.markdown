@@ -1,8 +1,17 @@
+---
+layout: post
+title:  "平时遇到的问题积累"
+date:   2016-08-05 11:21:03 +0800
+tags: js,css,html
+---
+
 ## 1. css问题
 
 #### 绝对定位
 
 对于元素内有绝对定位的元素，不能使用tranform属性，也就是说不能使用动画，否则绝对定位的元素无法正常显示,这是规定的.所以用了绝对定位或者fixed定位的,最好直接放在body下.
+
+*2016-08-05*
 
 ## 2. 浏览器
 
@@ -11,6 +20,8 @@
 **表现:input无法输入.**
 
 在safari浏览器(暂时没有测试其它浏览器)下如果css样式设置了`user-select: none;`,那么input会无法被正确使用,也就是无法点击和输入.
+
+*2016-08-11*
 
 #### 2. safari
 
@@ -24,7 +35,51 @@
 
 如果还不行,那你就直接上测试服务器测试好了,更简单快捷.
 
-## js问题
+*2016-08-10*
+
+#### 3. iframe跨域
+
+**表现:无法获取到iframe里面的dom**
+
+浏览器禁止获取到跨域的iframe,网上很多使用js解决办法,而且都是号称"真正的....",可是都没有考虑到跨域问题,我就不想被打脸了,所有我这里先声明你不一定有用....
+
+我的解决办法很简单,没有用到一丁点js代码,只用了css.
+
+先看代码:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>iframe跨域</title>
+</head>
+<body>
+  <iframe name="info" width="100%" id="info" height="100%" frameborder="0" scrolling="no" src="http://baidu.com"></iframe>
+</body>
+</html>
+```
+
+如果你直接复制这段代码运行你会发现高度根本就没有自适应,缩成一块了.你再观察仔细一点的话你会发现由于`body`高度没有设置,所以我们要这样:
+
+```html
+<!DOCTYPE html>
+<html>
+<head style="height: 100%;width: 100%;position: absolute;padding: 0;margin: 0;">
+  <title>iframe跨域</title>
+</head>
+<body>
+  <iframe name="info" width="100%" id="info" height="100%" frameborder="0" scrolling="yes" src="http://baidu.com"></iframe>
+</body>
+</html>
+```
+
+重点是`position: absolute;` 和 `height: 100%;width: 100%;`,如果不设置 `position: absolute;` 那么你的宽度和高度都没反应的.
+
+而且iframe需要设置`scrolling="yes"`, 否则没法滚动屏幕内容.
+
+*2016-08-23*
+
+## js
 
 #### 1. 设置的`color`变成`rgb`
 
@@ -64,3 +119,8 @@ if(thisIdColor.replace(/\s+/g,"")==="rgb(213,213,213)"){
 ```
 
 你还要记得去掉空格,否则又会得到错误的结果.
+
+*2016-08-21*
+
+
+**本文讲持续更新,最后更新时间:2016-08-23**
