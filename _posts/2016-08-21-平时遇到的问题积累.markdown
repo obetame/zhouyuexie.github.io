@@ -134,5 +134,83 @@ if(thisIdColor.replace(/\s+/g,"")==="rgb(213,213,213)"){
 
 *2016-08-21*
 
+#### js倒计时
 
-**本文讲持续更新,最后更新时间:2016-08-23**
+如果你做过js倒计时的插件,你可能觉得很简单,直接用`setTimeout`或者`setInterval`定时循环就可以了,但是今天我要说的是另外的一个问题:移动端定时.
+
+1. `setTimeout`定时器:
+
+```javascript
+var countdown = function(){
+  // 你的代码
+  // 再写下面这行,一秒后继续执行这个函数
+  setTimeout("countdown()",1000);
+}
+countdown();//启动这个定时函数
+```
+
+2. `setInterval`定时器:
+
+```javascript
+var countdown = setInterval(function(){
+  // 你的代码
+},1000);
+```
+
+从上面的两段代码看,是不是觉得`setInterval`定时器代码更简单更容易呢?
+
+而且`setInterval`能确保你的函数一秒执行一次,而`setTimeout`就不行了,如果你的函数写了过多的运算操作,超过了一秒的话那`setTimeout`的运算公式:`运算时间="函数操作的时间"+"setTimeout定时的时间"`.
+
+所以我们大部分时候都是用的`setInterval`定时器,不过后来发现一个问题:就是在移动端界面(iPhone,暂时不知道Android怎么样)上使用`setInterval`,浏览器会很神器的"暂停"定时器,触发这个"暂停"操作的动作就是滑动屏幕,如果你滑动的动作比较慢,再放开手的时候你会发现定时器比正常时间少了,也就是说你触摸的时候定时器确实处于"暂停"或者"冷冻"状态.
+
+我来说一下解决办法吧:
+
+**打补丁**:你可以自己处理一下,也就是记录当前的时间,每次检查一下定时是否正确,如果不正确就改到正确的值,这个办法需要再增加一个定时器,不过我有更好的方法,请看下面:
+
+```javascript
+// 首先记录计时器启动的时间
+var start = Date.now();
+
+// 计时器
+var countdown = setInterval(function(){
+  // 你的代码
+},1000);
+
+// 添加一个touchend事件,也就是触摸结束后的事件
+window.addEventListener("touchend",function(){
+  // 将当前的时间和开始的时间进行对比
+  var now = Date.now();
+  // 获取到开始到现在的秒数
+  var ms = parseInt((now-start)/1000);
+  // 剩下的就是你的操作了
+  // 比如将这个正确的值替换到你得DOM中
+});
+```
+
+差点忘了`setTimeout`还有一个问题,就是执行一段时间后会突然停一下然后立即又执行了,对于这个现象我是搞不懂了,感兴趣的可以复制我下面这段代码放到你的浏览器上执行.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>测试</title>
+</head>
+<body>
+  <span id="date" style="font-size: 10em;"></span>
+<script type="text/javascript">
+  var date = document.getElementById("date");
+  date.innerHTML = 1;
+  function change(){
+    date.innerHTML++;
+    setTimeout("change()",100);
+  }
+  change();
+</script>
+</body>
+</html>
+```
+
+*2016-08-25*
+
+**本文将持续更新,最后更新时间:2016-08-25**
