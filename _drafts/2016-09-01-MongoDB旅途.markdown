@@ -1,0 +1,203 @@
+---
+layout: post
+title:  "MongoDB旅途"
+date:   2016-09-01 10:52:03 +0800
+tags: mongodb,database
+---
+
+本来已经安装配置过mongodb的,可是这次重新来安装发现都忘了,看来这些东西都需要不断的学习才行,这里我就记录一下自己重新安装配置过程好了,免得以后再次安装又要各种看官方英文文档....
+
+## 安装MongoDB
+
+安装很简单,[点击这里](https://docs.mongodb.com/master/installation/)找到你的平台然后按照流程来按照(注意mongodb分社区版和企业版),我用的是linux中的ubuntu,所以找到[这个页面](https://docs.mongodb.com/master/tutorial/install-mongodb-on-ubuntu/),我们直接使用包安装吧:
+
+#### 1. 增加包源的位置
+
+```shell
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+```
+
+#### 2. 创建mongodb列表文件
+
+请选择合适你版本的命令:
+
+```shell
+# Ubuntu 12.04
+echo "deb http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+# Ubuntu 14.04
+echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+# Ubuntu 16.04
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+```
+
+#### 3. 更新包数据
+
+```shell
+sudo apt-get update
+```
+
+#### 4. 安装MongoDB
+
+```shell
+# 安装最新稳定版
+sudo apt-get install -y mongodb-org
+
+# 开发版本
+sudo apt-get install -y mongodb-org=3.2.9 mongodb-org-server=3.2.9 mongodb-org-shell=3.2.9 mongodb-org-mongos=3.2.9 mongodb-org-tools=3.2.9
+```
+
+## 启动MongoDB
+
+#### 启动MongoDB
+
+有三种启动方式,第一种默认启动:
+
+```shell
+mongod
+# 一般有这类输入,表示这个进程的端口号
+# 我们可以通过输入:kill 15954,来关闭mongodb
+forked process:15954
+```
+
+第二种,配置文件方式启动:
+
+```shell
+mongod --config /etc/mongodb.conf
+```
+
+第三种,直接命令加参数启动:
+
+```shell
+mongod --fork --logpath=/data/db/mongodb.log --logappend
+```
+
+#### 问题
+
+如果提示这一类错误:
+
+```shell
+initandlisten] exception in initAndListen: 29 Data directory /data/db not found., terminating
+2016-09-01T10:38:00.000+0800 I CONTROL  [initandlisten] dbexit:  rc: 100
+```
+
+MongoDB默认启动是需要一个目录作为数据库的,这个目录就是`/data/db`,所以你需要创建一个目录`/data/db`,如果你是用root账户创建,那么你启动也需要使用root账户启动,否则:
+
+```shell
+exception in initAndListen: 98 Unable to create/open lock file: /data/db/mongod.lock errno:13 Permission denied Is a mongod instance already running?
+```
+
+这时你可以手动更改这两个目录的权限为你普通账户的权限,这样就不需要使用root账户启动mongodb了.
+
+## MongoDB配置
+
+MongoDB默认的配置文件在`/etc/mongod.conf`:
+
+```conf
+# mongod.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: true
+#  engine:
+#  mmapv1:
+#  wiredTiger:
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 127.0.0.1
+
+
+#processManagement:
+
+#security:
+
+#operationProfiling:
+
+#replication:
+
+#sharding:
+
+## Enterprise-Only Options:
+
+#auditLog:
+
+#snmp:
+```
+
+1. 日志文件位置:`/var/log/mongodb/mongod.log`.
+
+2. `logAppend:true`意思是以追加方式写入日志.
+
+3. 是否以守护进程方式运行:`fork:true`.
+
+4. 默认端口和ip:`port: 27017`,`bindIp: 127.0.0.1`.
+
+5. 数据库位置:`/var/lib/mongodb`.
+
+其它详细信息我就不一一列出来了,官网都有.
+
+## 连接MongoDB
+
+默认启动:
+
+```shell
+mongo
+```
+
+如果你默认启动MongoDB,那么MongoDB是不需要用户名和密码的,因为你没有配置这个参数`auth`,所以都可以连上去.用户认证，默认false。不需要认证。当设置为true时候，进入数据库需要auth验证，当数据库里没有用户，则不需要验证也可以操作。直到创建了第一个用户，之后操作都需要验证。
+
+首先创建一个管理员用户:
+
+```shell
+> use admin
+switched to db admin
+> db.createUser({
+... 	user:"su",
+... 	pwd:"su",
+... 	roles:[{role:"userAdminAnyDatabase",db:"admin"}]
+... })
+# 下面的是输出
+Successfully added user: {
+	"user" : "su",
+	"roles" : [
+		{
+			"role" : "userAdminAnyDatabase",
+			"db" : "admin"
+		}
+	]
+}
+```
+
+刚建立了 userAdminAnyDatabase 角色，用来管理用户，可以通过这个角色来创建、删除用户。验证：需要开启auth参数。
+
+再来试试,创建一个数据库然后添加这个数据库的管理员:
+
+```shell
+> use quietboy
+switched to db quietboy
+> db.createUser({user:"quietboy",pwd:"quietboy",roles:[{role: "readWrite",db:"quietboy"}]})
+```
+
+值得注意的是:`use quietboy`,只是简单的切换到那个数据库,并没有真正的创建那个数据库,创建那个数据库的操作是插入一条数据,比如:
+
+```shell
+> use quietboy
+switched to db quietboy
+> db.quietboy.insert({name:"quietboy"})
+```
+
+这个数据库才真的创建好了.

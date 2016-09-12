@@ -1,0 +1,116 @@
+---
+layout: post
+title:  "前端开发如何不发布线上就能手机上预览+调试+CSS+JS"
+date:   2016-09-12 11:21:03 +0800
+tags: 前端,css,js
+---
+
+前端开发可以做到非常的快速和方便,离不开各种工具的帮忙和js语言本身的特性.前端移动开发测试有chrome,但是我们有时候还是要使用手机测试后才真正发布到服务器,如果发布后被老板发现一个重大的bug,那你背后的老板肯定恨不得杀了你,所以测试很关键,今天我们来看看一个合格的前端是如何通过手机测试的.
+
+## 哪些工具
+
+这里列出我们需要使用到的工具:
+
+1. [fiddler](http://www.telerik.com/fiddler)
+
+> Fiddler是一个http协议调试代理工具，它能够记录并检查所有你的电脑和互联网之间的http通讯，设置断点，查看所有的“进出”Fiddler的数据（指cookie,html,js,css等文件.
+
+如果你是windows用户,我建议你安装这个,非常注明的抓包工具,当你测试的时候需要查看数据是否正确和各种传输问题,这个工具能很好的帮助你.
+
+2. [whistle](https://whistle.gitbooks.io/help/content/install.html)
+
+> whistle是用Node实现的类似Fiddler的web调试代理工具，支持查看和修改HTTP(S)、Websocket请求响应数据，且支持跨平台(Windows、Mac、Linux等可以安装Node的操作系统)
+
+如果你是Linux用户,那我建议你使用whistle.
+
+3. [express](http://www.expressjs.com.cn/)
+
+别告诉我你本地没有web服务器,nginx至少用过吧(虽然我觉得配置好麻烦).作为一个前端er,应该使用Node.js,而`express`是基于Node.js平台，快速、开放、极简的 web 开发框架。
+
+**以上三种工具中的前两个可以二选一,第三个看你自己了,如果你能手写一个web服务器那更好,但是现成的轮子不用而去自己造木轮子你肯定不会一般的闲.**
+
+## 如何使用
+
+本来是不想介绍这些工具如何使用的,但是如果我不说这篇文章就不是好文章了,毕竟别人都没看懂...当然如果你直到如何使用那你可以跳过这一段.
+
+### [fiddler](http://www.telerik.com/fiddler)
+
+**针对windows用户(linux用户并不能完美的使用)**
+
+1. 下载安装...
+2. 启动Fiddler，打开菜单栏中的 Tools > Fiddler Options，打开“Fiddler Options”对话框。
+3. 在Fiddler Options”对话框切换到“Connections”选项卡，然后勾选“Allow romote computers to connect”后面的复选框，记录当前窗口的Fiddler listens on port的值,然后点击“OK”按钮。
+4. 打开cmd输入：`ipconfig`，找到本机的ip地址。
+5. 打开你的手机,直到设置里的wifi选项(手机电脑必须同一个局域网下),手动将手机上的代理ip地址设置为刚刚看到的电脑ip地址,端口设置为第三步记录下的值.
+
+### [whistle](https://whistle.gitbooks.io/help/content/install.html)
+
+这个官方文档写的很清楚了,我这里就不再多说,就说说几个我使用的感受和经验:
+
+1. 每次启动电脑都需要手动启动`w2 start`:
+
+```shell
+quietboy@quietboy-pc:~$ w2 start
+[i] whistle started
+[i] First, use your device to visit the following URL list, gets the IP of the URL you can visit:
+    http://127.0.0.1:8899/
+    http://192.168.31.86:8899/
+    Note: If the following URLs are unable to access, check the server firewall settings
+          For more information, please visit https://github.com/avwo/whistle
+[i] Second, configure your device to use whistle as its HTTP and HTTPS proxy on IP:8899
+[i] Last, use Chrome to visit http://local.whistlejs.com/ to get started
+```
+
+2. 接下来进行fiddler使用的第四步,linux查看ip命令`ifconfig`.但是上面已经给你显示出了地址和端口,默认的使用端口是`8899`.
+
+3. linux中的chrome最好下载一个插件`SwitchySharp`管理你的代理,否则当你第二次没有启动whistle的时候你会惊奇的发现你的chrome浏览器无法上网(因为你得代理服务器没有开,没有相应啦).
+
+### [express](http://www.expressjs.com.cn/)
+
+这个你最好熟悉nodejs,但是不熟悉也没关系,我们就当它一个服务器就可以了.[这里查看express文档](http://www.expressjs.com.cn/4x/api.html)
+
+1. 安装一个`express-generator`,[点击这里](http://www.expressjs.com.cn/starter/generator.html)
+
+```shell
+express myexpress
+```
+
+就帮你生成好一个express服务器骨架了,我们继续:
+
+```shell
+# 切换进去
+cd myexpress
+
+# 安装依赖
+npm install
+```
+
+2. 等待安装完成后打开`app.js`文件,增加你的路由,比如:
+
+```javascript
+// 服务器匹配到请求myurl后执行的动作
+app.get('/myurl',function(req,res,next){
+	// 返回模板index,模板在你的views文件夹下面
+	res.render("index");
+});
+```
+
+express默认的模板是`jade`,所以views下的模板是`jade`格式,如果你不懂,你可以直接[点击这里](http://www.html2jade.org/)去将html格式转换为jade格式.而你的静态文件,比如js,css图片文件都放在`public`文件夹下面.
+
+更多的我就不多说了,比如routes是路由文件,bin里面有可以修改端口,这些你都可以打开文件慢慢研究.
+
+3. 启动express
+
+```shell
+npm start
+```
+
+express默认端口是3000,你可以在`bin/www`文件里修改.然后浏览器打开`localhost:3000`.手机也可以访问了.
+
+## 开始使用
+
+将你的测试文件放到express服务器目录下面后如果浏览器能打开就说明你pc测试成功了,接下来手机测试.
+
+如果你不想每次输入ip地址和端口,那么你可以打开fiddler,点击菜单中的Tools,找到HOSTS,在输入框中输入`192.168.31.86:3000 www.test.com`,这里的ip地址是我的,你更换成你的就可以了,然后手机直接访问`www.test.com`就想当于访问`192.168.31.86:3000`了.
+
+**最后更新于:2016-09-12**

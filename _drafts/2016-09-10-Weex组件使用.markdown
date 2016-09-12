@@ -1,0 +1,53 @@
+---
+layout: post
+title:  "Weex组件使用"
+date:   2016-09-10 11:21:03 +0800
+tags: vue,weex
+---
+
+weex通过vue中的组件思想实现自己的组件,而这些组件会把自定义的标签转换为weex想要显示的样子.以下就是weex中各个标签的介绍.
+
+## slider
+
+`slider`是一个轮播标签,`indicator`是指示器,`slider-page`则是轮播内容.
+
+```html
+<slider></slider>
+```
+
+这个标签就是vue的"组件",这些组件怎么写的我们可以不用管(看过官方文档的都应该直到),编译的时候weex会帮我们处理好的.
+
+#### 属性
+
+首先`slider`标签有以下属性(暂时知道这么多):
+
+```html
+<slider interval="1000" auto-play="true" append="tree">
+</slider>
+```
+
+* interval:滚动时间.
+* auto-play:是否自动播放.
+* [append](https://github.com/alibaba/weex/blob/doc/doc/syntax/render-logic.md):走不同的渲染列表方式,`tree`将会等待所有的列表渲染完成再显示,而`node`则渲染一个就显示一个.
+
+## indicator和slider-page
+
+`indicator`和`slider-page`是上面那个`slider`内部的标签,需要一起配合使用.
+
+```html
+<slider interval="1000" auto-play="true" append="tree">
+	<indicator></indicator>
+  <slider-page repeat="{{sliders}}"></slider-page>
+</slider>
+```
+
+#### 属性
+
+这两个标签的属性很简单,都是一些基本属性(也就是大家都有的).`repeat`意思是以{{sliders}}作为循环项,迭代地生成当前的weex标签.
+
+
+
+## 其它资料
+
+* [DOM操作](https://github.com/alibaba/weex/blob/doc/doc/modules/dom.md)
+* [ID](https://github.com/alibaba/weex/blob/doc/doc/syntax/id.md)

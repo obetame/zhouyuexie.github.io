@@ -79,6 +79,87 @@ tags: js,css,html
 
 *2016-08-23*
 
+#### 4. Safari & Gecko
+
+> 移动平台虽然支持W3C最新特性,可是对于不同的属性解读就各不相同了,甚至于有时候同一个浏览器不同平台内核不同,对于前端开发的人来说这是一个头疼但是是必须了解的问题.
+
+**问题:处理JSON数据**
+
+开发移动网页需要不同系统的手机作为测试,否则当你以为大功告成的时候你会凌晨被叫醒去修复另一个平台上不能运行的问题...本人使用的是iPhone6,所以一般测试就用这个,很多时候都没有问题,而电脑因为是linux平台,所以用的Chromium浏览器,这个浏览器可以说是Webkit开源后的项目,你可以[点击这里](http://chrome.360.cn/test/core/index.html)来查看你浏览器的内核.
+
+Chrome和`Safari`的内核就是`WebKit`,而Firefox浏览器内核是`Gecko`.这次我想说的就是不同平台内核问题(只是简单介绍).关于内核这个东西,太多了,如果包括国内厂商的话内核就更多了,但是大多是基于`WebKit`二次开发的,所以一般差别不会太大(但是还是有差别的).比如:
+
+Chromium,各安卓浏览器运行下面代码:
+
+```javascript
+// 使用vue-resource
+this.$http.get("./json",then((res)=>{
+  console.log(typeof res.data);// 得到"string"
+}));
+```
+
+WebKit,苹果浏览器运行下面代码:
+
+```javascript
+// 使用vue-resource
+this.$http.get("./json",then((res)=>{
+  console.log(typeof res.data);
+  // 得到"Object,也就是一个json数据"
+}));
+```
+
+所以有时候为了兼容各个浏览器,我们需要写一些兼容的代码:
+
+```javascript
+// 使用vue-resource
+this.$http.get("./json",then((res)=>{
+  var jsondata;
+  try{
+    jsondata = JSON.parse(res.data);
+  }
+  catch(e){
+    jsondata = res.data;
+  }
+  // 下面就是你的操作
+}));
+```
+
+或者你可以判断一下,而不是使用try:
+
+```javascript
+// 使用vue-resource
+this.$http.get("./json",then((res)=>{
+  var jsondata;
+  if(typeof res.data==="string"){
+    jsondata = JSON.parse(res.data);
+  }
+  else{
+    jsondata = res.data;
+  }
+  // 下面就是你的操作
+}));
+```
+
+如果你发现时候很晚,根本没有时间取更改这么多的代码,你可以定义一个函数去格式化他然后返回,这样就不用重写整个代码了,修改量少了很多.
+
+```javascript
+let getJsonData = (data)=>{
+  if(typeof data==="string"){
+    return JSON.parse(data);
+  }
+  else{
+    return data;
+  }
+}
+
+this.$http.get("./json",then((res)=>{
+  var jsondata = getJsonData(res.data);
+  // 下面就是你的操作
+}));
+```
+
+*2016-8-31*
+
 ## js
 
 #### 1. 设置的`color`变成`rgb`
